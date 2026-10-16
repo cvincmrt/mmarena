@@ -1,110 +1,119 @@
-# mmarena.sk — Učebný denník Laravelu
+# Laravel projekt – MM Arena
 
-## Cieľ projektu
+## 1. Cieľ projektu
 
-Postupne vytvoriť nový web mmarena.sk pomocou Laravelu, Blade a CSS. Učiť sa pritom PHP, HTML, CSS a Laravel prakticky, krok za krokom.
+Postupne vytvoriť nový web pre MM Arenu (`mmarena.sk`) pomocou Laravelu, Blade, HTML a CSS.
 
-## Ako spolu pracujeme
+Cieľom je naučiť sa potrebné základy a pritom reálne vytvárať web. Každú novú tému si najprv vysvetlíme, potom ju prakticky vyskúšam a až následne budeme pokračovať.
 
-- Postupujeme po malých krokoch.
-- Každú novú vec vysvetlíme a používateľ si ju prakticky vyskúša.
-- Pred pokračovaním skontrolujeme výsledok.
-- Neopakujeme hotové lekcie bez dôvodu.
-- Po každej lekcii aktualizujeme tento súbor.
-- Zmeny v kóde pravidelne ukladáme do GitHubu.
-- Zachovávame existujúci obsah webu a dôležité pôvodné URL.
-- Google Kalendár bude slúžiť iba na čítanie udalostí. Voľné termíny nebudeme odvodzovať z neprítomnosti udalostí.
-- Filament a administráciu pridáme až po zvládnutí základov.
+## 2. Pravidlá učenia
 
-## Technické prostredie
+- Postupovať po malých krokoch.
+- Nové témy vysvetľovať jednoducho a na príkladoch.
+- Kód píšem a upravujem ja.
+- Po každej úlohe pošlem výsledok na kontrolu.
+- Neopakovať zbytočne témy, ktoré už ovládam.
+- Zachovať pôvodný obsah webu a jeho URL adresy. Ak bude potrebné adresy zmeniť, vyriešiť presmerovania.
 
-- Framework: Laravel 13.37.0
-- PHP: 8.4.25
-- Lokálne prostredie: Windows + Herd
-- Projekt na domácom počítači: `C:\ProjectLaravel\mmarena`
-- GitHub: https://github.com/cvincmrt/mmarena.git
-- Vetva Git: `main`
-- Databáza: SQLite
-- Frontend: Blade a CSS
-- Starter kit: nepoužitý
+## 3. Technické prostredie
 
-## Hotové lekcie
+- **Projekt:** MM Arena
+- **GitHub:** https://github.com/cvincmrt/mmarena.git
+- **Vetva:** `main`
+- **Operačný systém:** Windows
+- **Lokálne prostredie:** Laravel Herd
+- **Laravel:** 13.37.0
+- **PHP:** 8.4.25
+- **Composer:** 2.10.2
+- **Databáza:** SQLite
+- **Šablóny:** Blade
+- **Frontend:** HTML a CSS
+- **Administrácia v budúcnosti:** Filament
 
-### 1. Základ projektu a GitHub
+Projekt nepoužíva starter kit.
 
-- [x] Vytvorenie Laravel projektu.
-- [x] Prvý commit a nahratie projektu na GitHub.
-- [x] Klonovanie projektu na druhý počítač.
-- [x] Inštalácia PHP závislostí cez Composer.
-- [x] Vytvorenie lokálneho `.env` a aplikačného kľúča.
-- [x] Vytvorenie SQLite databázy a spustenie migrácií.
-- [x] Úspešné spustenie lokálneho servera.
+## 4. Čo už mám hotové
 
-### 2. Routes
+### Prostredie a Git
 
-- [x] Domovská route `/` s názvom `home`.
-- [x] Kontaktná route `/contact` s názvom `contact`.
-- [x] Používanie pomenovaných rout.
-- [x] Kontrola rout príkazom `php artisan route:list`.
+- [x] Naklonovanie projektu z GitHubu.
+- [x] Inštalácia závislostí cez Composer.
+- [x] Vytvorenie lokálneho súboru `.env`.
+- [x] Vygenerovanie aplikačného kľúča.
+- [x] Vytvorenie SQLite databázy.
+- [x] Spustenie databázových migrácií.
+- [x] Spustenie Laravel servera.
+- [x] Základná práca s Gitom: commit a push.
 
-### 3. Controllery
+### Routes a controllery
 
-- [x] `HomeController@index` zobrazuje domovskú stránku.
-- [x] `HomeController@contact` zobrazuje kontaktnú stránku.
-- [x] Odovzdávanie premenných do view pomocou `compact()`.
-- [x] Presunutie logiky kontaktnej stránky z route do controllera.
+- [x] Pochopiť základné routy v `routes/web.php`.
+- [x] Vytvoriť pomenované routy `home` a `contact`.
+- [x] Zobraziť zoznam rout pomocou `php artisan route:list`.
+- [x] Vytvoriť `HomeController`.
+- [x] Použiť metódy `index()` a `contact()`.
+- [x] Odovzdať údaje z controllera do Blade pomocou `compact()`.
 
-### 4. Blade a layout
+### Blade a spoločná šablóna
 
-- [x] Spoločný layout `resources/views/layouts/app.blade.php`.
-- [x] Použitie `@yield('title')` a `@yield('content')`.
-- [x] Použitie `@extends`, `@section` a `@endsection`.
-- [x] Navigácia cez `route('home')` a `route('contact')`.
+- [x] Vytvoriť spoločnú šablónu `layouts/app.blade.php`.
+- [x] Pochopiť `@yield`, `@extends` a `@section`.
+- [x] Vytvoriť stránky `home.blade.php` a `contact.blade.php`.
+- [x] Použiť pomenované routy v navigácii pomocou `route()`.
+- [x] Zobraziť dynamické údaje pomocou `{{ }}`.
 
-## Aktuálny stav projektu
+### PHP polia a Blade cykly
 
-Existujú tieto dôležité súbory:
+- [x] Vytvoriť pole `$sluzby` v `HomeController`.
+- [x] Odovzdať pole do view pomocou `compact()`.
+- [x] Zobraziť položky poľa v `home.blade.php`.
+- [x] Použiť `@forelse`, `@empty` a `@endforelse`.
+- [x] Otestovať zoznam s položkami aj prázdne pole.
+- [x] Použiť HTML zoznam s elementmi `<ul>` a `<li>`.
 
-- `routes/web.php`
-- `app/Http/Controllers/HomeController.php`
-- `resources/views/layouts/app.blade.php`
-- `resources/views/home.blade.php`
-- `resources/views/contact.blade.php`
+## 5. Aktuálny stav projektu
 
-V `HomeController` sú zatiaľ ukážkové údaje:
+Funkčné stránky:
 
-- Názov arény: MM Arena
+- `/` – domovská stránka
+- `/contact` – kontaktná stránka
+
+Pomenované routy:
+
+- `home`
+- `contact`
+
+Domovská stránka zatiaľ používa skúšobné údaje:
+
+- Názov: MM Arena
 - Mesto: Ostrava
 - Počet klzísk: 1
+- Služby: verejné korčuľovanie, hokejový tréning, prenájom ľadu
 
-Domovská aj kontaktná stránka sa lokálne zobrazujú správne.
+Ide o testovacie údaje, ktoré neskôr nahradíme správnymi informáciami pre web.
 
-## Najbližšia lekcia
+## 6. Najbližšia lekcia
 
-### 5. PHP polia a Blade `@foreach`
+### Asociatívne polia v PHP
 
-Ciele:
+- [ ] Pochopiť rozdiel medzi obyčajným a asociatívnym poľom.
+- [ ] Priradiť každej službe názov a cenu.
+- [ ] Odovzdať nové údaje do Blade.
+- [ ] Zobraziť názvy a ceny na stránke.
+- [ ] Precvičiť si `@foreach`.
 
-- [ ] Pochopiť, čo je pole v PHP.
-- [ ] Vytvoriť jednoduché pole s údajmi pre stránku.
-- [ ] Odovzdať pole z controllera do Blade view.
-- [ ] Zobraziť položky pomocou `@foreach`.
-- [ ] Vyskúšať malú samostatnú úlohu.
-
-Nebudeme znova vytvárať layout ani opakovať základy rout a controllerov.
-
-## Ďalší plán
+## 7. Ďalší plán
 
 1. PHP polia, podmienky a cykly.
 2. Blade komponenty a opakovane použiteľné časti stránky.
-3. HTML a CSS, responzívny dizajn.
-4. Návrh a postupná tvorba stránok mmarena.sk.
+3. HTML a CSS – vzhľad a responzívny dizajn.
+4. Postupná tvorba stránok mmarena.sk.
 5. Databázové modely a migrácie podľa potrieb webu.
 6. Administrácia cez Filament.
 7. Čítanie udalostí z Google Kalendára.
-8. Kontrola pôvodného obsahu, URL a presmerovaní.
-9. Testovanie, bezpečnosť a nasadenie.
+8. Zachovanie pôvodného obsahu, URL adries a nastavenie presmerovaní.
+9. Testovanie, bezpečnosť a nasadenie webu.
 
-## Záznamy ďalších lekcií
+## 8. Záznamy ďalších lekcií
 
-Nové lekcie pridávame sem s dátumom, stručným popisom, výsledkom a úlohou na pokračovanie.
+Po dokončení každej novej témy sem doplníme, čo som sa naučil, čo funguje a čo bude nasledovať.
