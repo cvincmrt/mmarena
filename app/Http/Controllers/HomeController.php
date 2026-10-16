@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Service;
 
 class HomeController extends Controller
 {
@@ -12,6 +13,14 @@ class HomeController extends Controller
         $mesto = "Ostrava";
         $pocetKlzisk = 1;
 
-        return view('home', compact('nazovAreny', 'mesto', 'pocetKlzisk'));
+        $sluzby = Service::where('is_active', true)->get();
+
+
+        return view('home', compact('nazovAreny', 'mesto', 'pocetKlzisk', 'sluzby'));
+    }
+
+    public function contact()
+    {
+        return view('contact');
     }
 }
