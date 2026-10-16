@@ -96,11 +96,11 @@ Ide o testovacie údaje, ktoré neskôr nahradíme správnymi informáciami pre 
 
 ### Asociatívne polia v PHP
 
-- [ ] Pochopiť rozdiel medzi obyčajným a asociatívnym poľom.
-- [ ] Priradiť každej službe názov a cenu.
-- [ ] Odovzdať nové údaje do Blade.
-- [ ] Zobraziť názvy a ceny na stránke.
-- [ ] Precvičiť si `@foreach`.
+- [x] Pochopiť rozdiel medzi obyčajným a asociatívnym poľom.
+- [x] Priradiť každej službe názov a cenu.
+- [x] Odovzdať nové údaje do Blade.
+- [x] Zobraziť názvy a ceny na stránke.
+- [x] Precvičiť si `@foreach`.
 
 ## 7. Ďalší plán
 
