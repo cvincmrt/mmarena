@@ -92,9 +92,7 @@ Domovská stránka zatiaľ používa skúšobné údaje:
 
 Ide o testovacie údaje, ktoré neskôr nahradíme správnymi informáciami pre web.
 
-## 6. Najbližšia lekcia
-
-### Asociatívne polia v PHP
+## Asociatívne polia v PHP
 
 - [x] Pochopiť rozdiel medzi obyčajným a asociatívnym poľom.
 - [x] Priradiť každej službe názov a cenu.
@@ -102,7 +100,17 @@ Ide o testovacie údaje, ktoré neskôr nahradíme správnymi informáciami pre 
 - [x] Zobraziť názvy a ceny na stránke.
 - [x] Precvičiť si `@foreach`.
 
-## 7. Ďalší plán
+
+## Blade podmienky
+
+- [x] Pochopiť, ako funguje `@if`.
+- [x] Použiť `@else` pre alternatívnu možnosť.
+- [x] Použiť `@elseif` na kontrolu ďalšej podmienky.
+- [x] Ukončiť podmienku pomocou `@endif`.
+- [x] Otestovať rôzne hodnoty premennej `$pocetKlzisk` (`0`, `1`, `2`).
+- [x] Pochopiť, ako sa podľa hodnoty premennej mení obsah stránky.
+
+
 
 1. PHP polia, podmienky a cykly.
 2. Blade komponenty a opakovane použiteľné časti stránky.
