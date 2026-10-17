@@ -13,7 +13,7 @@ class HomeController extends Controller
         $mesto = "Ostrava";
         $pocetKlzisk = 1;
 
-        $sluzby = Service::where('is_active', true)->get();
+        $sluzby = Service::where('is_active', true)->orderBy('price')->limit(3)->get();
 
 
         return view('home', compact('nazovAreny', 'mesto', 'pocetKlzisk', 'sluzby'));
