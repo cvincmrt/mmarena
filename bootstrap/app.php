@@ -12,7 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+    //vytvorenie aliasu pre LocalOnly
+        //ked v route pouzijeme local.only Laravel spusti triedu LocalOnly
+
+        $middleware->alias([
+            'local.only' => \App\Http\Middleware\LocalOnly::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
