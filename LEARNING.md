@@ -1,370 +1,166 @@
-
 # Laravel Learning Plan – MMArena.sk
 
-**Aktualizované:** 19. 10. 2026
+> **Aktualizované:** 19. 10. 2026  
+> **Stav:** Lekcia 10 (CRUD, zmena stavu, základné testy) dokončená. Nasleduje Lekcia 11 – rozšírenie obsahu služieb.  
+> **Pravidlo:** pokračovať po jednom kroku; nevykonávať opakovane už hotové úlohy.
 
 ## 1. Cieľ projektu
 
-Postupne vytvoriť webovú stránku pre MMArena.sk pomocou:
+Postupne vytvoriť skutočnú webovú stránku **MMArena.sk** a popritom sa naučiť PHP a Laravel. Používané technológie:
 
-- Laravel – backend a aplikačná logika
-- PHP – programovací jazyk
-- SQLite / neskôr MySQL – databáza
-- Blade – šablóny stránok
-- Tailwind CSS – vzhľad a responzívny dizajn
-- Laravel Breeze alebo vhodná alternatíva – autentifikácia
-- Filament – administrácia
+- Laravel – backend, routovanie, validácia a aplikačná logika
+- PHP – jazyk a objektovo orientované programovanie
+- SQLite – lokálna databáza; možný neskorší prechod na MySQL
+- Eloquent ORM – práca s databázou
+- Blade – šablóny a komponenty
+- Tailwind CSS 4 – štýlovanie a responzívne rozloženie
+- Vite – frontendové assety
+- Pest – automatizované testy
+- Autentifikácia (vhodný podporovaný starter kit) a prípadne Filament – **plánované, nie hotové**
 
-Cieľom nie je iba skopírovať kód. Dôležité je pochopiť, čo jednotlivé časti robia, vedieť ich upravovať a postupne si vytvoriť vlastný projekt.
+**Cieľ učenia:** rozumieť každému pridanému riadku, skúšať vlastné riešenia, pochopiť chyby, nie len kopírovať kód.
 
 ## 2. Prostredie projektu
 
 - Projekt: `mmarena`
-- Priečinok: `C:\ProjectLaravel\mmarena`
-- GitHub: https://github.com/cvincmrt/mmarena
-- Laravel: 13.37.0
-- PHP: 8.4.25
+- Lokálny priečinok (Windows): `C:\ProjectLaravel\mmarena`
+- GitHub (súkromný repozitár): https://github.com/cvincmrt/mmarena
+- Vetva: `main`
+- Laravel: 13.37.0 (podľa doterajších údajov)
+- PHP: 8.4.25 (podľa doterajších údajov)
 - Databáza: SQLite
-- Frontend: Blade, Tailwind CSS 4 a Vite
-- Vetva Git: `main`
-- Lokálna adresa: http://127.0.0.1:8000
+- Frontend: Blade + Tailwind CSS 4 + Vite
+- Lokálny server: http://127.0.0.1:8000
+- Editor: VS Code; terminál: Git Bash / Windows
 
 ### Užitočné príkazy
 
-Laravel server:
+```bash
+# Laravel server (ak PHP funguje v PATH)
+php artisan serve
+
+# Vite (v samostatnom termináli)
+npm run dev
+
+# Pest / Laravel testy
+php artisan test --filter=ServiceTest
+
+# Kontrola routes
+php artisan route:list --path=services -v
+
+# Tinker
+php artisan tinker
+
+# Nová migrácia – náš NÁSLEDUJÚCI plánovaný krok
+php artisan make:migration add_media_and_content_to_services_table --table=services
+```
+
+Keď Git Bash nevie nájsť `php`, používali sme aj spúšťanie cez Windows `cmd.exe`, napríklad:
 
 ```bash
 cmd.exe //c "cd /d C:\ProjectLaravel\mmarena && php artisan serve"
 ```
 
-Tinker:
-
-```bash
-cmd.exe //c "cd /d C:\ProjectLaravel\mmarena && php artisan tinker"
-```
-
-Vite:
-
-```bash
-npm run dev
-```
-
-Artisan:
-
-```bash
-php artisan list
-```
-
-Ak Git Bash nenájde PHP, použiť uvedený zápis cez cmd.exe.
-
 ## 3. Doteraz zvládnuté témy
 
 ### 3.1 Základy projektu
 
-- [x] Vytvorenie Laravel projektu
-- [x] Konfigurácia .env
-- [x] Aplikačný kľúč
-- [x] SQLite databáza
-- [x] Spustenie migrácií
-- [x] Composer a npm
-- [x] Vite a Tailwind CSS 4
-- [x] Spustenie lokálnej stránky
+- [x] Vytvorenie Laravel projektu a `.env`
+- [x] Aplikačný kľúč, Composer, npm
+- [x] SQLite, migrácie a pripojenie k databáze
+- [x] Blade, Vite a Tailwind CSS 4
+- [x] Lokálne spúšťanie webu
 
 ### 3.2 Git a GitHub
 
-- [x] Základy Git
-- [x] Súkromný GitHub repozitár
-- [x] Pracovná vetva main
+- [x] Základné používanie Gitu
+- [x] Súkromný repozitár
+- [x] Vetva `main`
+- [ ] Potvrdiť nový commit po dokončenom CRUD (v konverzácii nepotvrdený)
 
-Pred väčšími zmenami vytvárať Git commit.
+Pred väčšou zmenou vytvoriť Git commit alebo zálohu databázy.
 
 ### 3.3 Routes a controllery
 
-- [x] Základné routes
-- [x] Named routes
-- [x] HomeController
-- [x] Metódy index() a contact()
-- [x] Prepojenie route a controllera
-- [x] Odovzdávanie údajov do Blade
-- [x] GET a POST routes
-- [x] ServiceController a metóda store()
-
-Používané routes:
-
-```php
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-
-Route::view('/services/create', 'services.create')
-    ->name('services.create');
-
-Route::post('/services', [ServiceController::class, 'store'])
-    ->middleware('local.only')
-    ->name('services.store');
-```
-
-V routes/web.php sú potrebné importy Route, HomeController a ServiceController.
-
-### 3.4 Blade a layout
-
-- [x] Blade šablóny
-- [x] Spoločný layout layouts/app.blade.php
-- [x] @extends, @section, @yield
-- [x] @forelse, @empty, @foreach
-- [x] @if, @else, @endif
-- [x] Escapovanie cez dvojité zložené zátvorky
-- [x] Práca s opisom pomocou ??
-- [x] Formátovanie cien cez number_format()
-- [x] Zobrazovanie prázdneho zoznamu
-- [x] Vytvorenie vlastného Blade komponentu
-- [x] Odovzdávanie parametrov do komponentu
-
-Bezpečný výpis:
-
-```blade
-{{ $sluzba->name }}
-```
-
-Formátovanie ceny:
-
-```blade
-{{ number_format($sluzba->price, 2, ',', ' ') }} €
-```
-
-Náhradný opis:
-
-```blade
-{{ $sluzba->description ?? 'Opis nie je dostupný.' }}
-```
-
-### 3.5 Blade komponenty
-
-- [x] Vytvorený priečinok resources/views/components
-- [x] Vytvorený service-card.blade.php
-- [x] Použitie @props(['sluzba'])
-- [x] Presunutie HTML karty do komponentu
-- [x] Zachovanie Tailwind CSS štýlov
-- [x] Prepojenie s home.blade.php
-
-Použitie:
-
-```blade
-@forelse ($sluzby as $sluzba)
-    <x-service-card :sluzba="$sluzba" />
-@empty
-    <p>Momentálne nemáme žiadne služby.</p>
-@endforelse
-```
-
-Dvojbodka pred sluzba znamená odovzdanie PHP výrazu.
-
-### 3.6 Tailwind CSS a Vite
-
-- [x] Tailwind CSS 4
-- [x] Načítanie cez @vite
-- [x] Responzívny grid
-- [x] Štýlovanie kariet
-- [x] Spoločná navigácia
-
-### 3.7 Model Service a databáza
-
-- [x] Model Service
-- [x] Migrácia services
-- [x] Eloquent ORM
-- [x] Mass assignment
-- [x] $fillable
-- [x] Overenie štruktúry SQLite
-
-Stĺpce:
-
-| Stĺpec | Význam |
-|---|---|
-| id | Primárny kľúč |
-| name | Povinný názov |
-| description | Voliteľný opis |
-| price | Cena služby |
-| is_active | Aktívny stav |
-| created_at | Dátum vytvorenia |
-| updated_at | Dátum aktualizácie |
-
-Model Service:
-
-```php
-protected $fillable = [
-    'name',
-    'description',
-    'price',
-    'is_active',
-];
-```
-
-### 3.8 Eloquent v Tinkeri
-
-- [x] Service::all()
-- [x] where()->get()
-- [x] first()
-- [x] count()
-- [x] find()
-- [x] findOrFail()
-- [x] isDirty() a getDirty()
-- [x] refresh()
-- [x] new Service()
-- [x] save()
-- [x] create()
-- [x] update a delete
-- [x] pluck()
-- [x] orderBy()
-- [x] orderByDesc()
-- [x] limit()
-- [x] Výber konkrétnych stĺpcov
-
-Dotaz na úvodnej stránke:
-
-```php
-Service::where('is_active', true)
-    ->orderBy('price')
-    ->limit(3)
-    ->get();
-```
-
-Zobrazuje najviac tri najlacnejšie aktívne služby.
-
-### 3.9 Testovacie služby
-
-Počas učenia boli používané:
-
-- Verejné korčuľovanie – test
-- Prenájom korčúľ – test
-- Brúsenie korčúľ – test
-- Individuálny tréning – test
-- Laravel test – formulár
-- Test Flash správy
-
-Pred produkciou skontrolovať a odstrániť nepotrebné testovacie dáta.
-
-### 3.10 Formulár na vytvorenie služby
-
-- [x] GET /services/create
-- [x] resources/views/services/create.blade.php
-- [x] Polia name, description, price
-- [x] POST metóda
-- [x] @csrf
-- [x] POST /services
-- [x] ServiceController::store()
-- [x] Validácia vstupov
-- [x] Chybové správy @error
-- [x] Zachovanie údajov cez old()
-- [x] Odoslanie formulára
-- [x] Testovanie pomocou dd()
-- [x] Skutočné uloženie do SQLite
-
-Validácia:
-
-```php
-$validated = $request->validate([
-    'name' => 'required|string|max:255',
-    'description' => 'nullable|string',
-    'price' => 'required|numeric|min:0',
-]);
-```
-
-Pravidlá:
-
-- required – povinná hodnota
-- string – text
-- max:255 – najviac 255 znakov
-- nullable – povolená prázdna hodnota
-- numeric – číselná hodnota
-- min:0 – minimálna hodnota 0
-
-### 3.11 Zachovanie údajov a chyby
-
-- [x] old('name')
-- [x] old('description')
-- [x] old('price')
-- [x] @error('name')
-- [x] @error('description')
-- [x] @error('price')
-
-Príklad:
-
-```blade
-@error('name')
-    <p class="mt-1 text-sm text-red-600">
-        {{ $message }}
-    </p>
-@enderror
-```
-
-### 3.12 Overenie SQLite
-
-Použitý príkaz:
-
-```php
-DB::select('PRAGMA table_info(services)');
-```
-
-Potvrdené nastavenie stĺpca is_active:
-
-```text
-name: is_active
-type: tinyint(1)
-notnull: 1
-dflt_value: "'1'"
-```
-
-Znamená to, že databáza automaticky nastaví novú službu ako aktívnu, pokiaľ nezadáme inú hodnotu.
-
-Netreba duplicitu:
-
-```php
-$validated['is_active'] = true;
-```
-
-Rozdiel:
-
-- notnull = 1: hodnota nesmie byť NULL
-- notnull = 0: hodnota môže byť NULL
-- dflt_value: predvolená databázová hodnota
-
-### 3.13 Middleware LocalOnly
-
-- [x] Vytvorený app/Http/Middleware/LocalOnly.php
-- [x] Kontrola prostredia local
-- [x] Použitie abort(403)
-- [x] Registrácia aliasu local.only
-- [x] Pripojenie middleware k POST route
-- [x] Kontrola route:list -v
-
-Middleware:
-
-```php
-public function handle(Request $request, Closure $next): Response
-{
-    if (!app()->environment('local')) {
-        abort(403);
-    }
-
-    return $next($request);
-}
-```
-
-Registrácia v bootstrap/app.php:
-
-```php
-$middleware->alias([
-    'local.only' => \App\Http\Middleware\LocalOnly::class,
-]);
-```
-
-DÔLEŽITÉ: LocalOnly nie je autentifikácia ani autorizácia. Neoveruje identitu používateľa alebo pôvod jeho požiadavky. Pred verejným nasadením treba použiť riadne prihlásenie a kontrolu oprávnení.
-
-Vývojový server ponechať na 127.0.0.1.
-
-### 3.14 Ukladanie cez ServiceController
-
-Aktuálna metóda store():
+- [x] `Route::get()`, `post()`, `patch()`, `delete()`
+- [x] Pomenované routes a `route('name')`
+- [x] Parametre `{service}`
+- [x] Route Model Binding: `Service $service` a automatické 404 pri neexistujúcej službe
+- [x] Rozlíšenie `GET`, `POST`, `PUT`, `PATCH`, `DELETE`
+- [x] `@method('PATCH')`, `@method('DELETE')`; význam `@method('PUT')`
+- [x] `HomeController`, `ServiceController`
+- [x] `compact('service')`, `compact('services')` a pomenovanie premenných v Blade
+- [x] Rozpoznanie konfliktu dvoch PATCH routes na rovnakej URL
+
+**Dohodnutá štruktúra URL / názvov routes** (podľa poslednej konverzácie):
+
+| Metóda | URL | Názov | Účel |
+|---|---|---|---|
+| GET | `/` | `home` | Domovská stránka |
+| GET | `/contact` | `contact` | Kontakt |
+| GET | `/services/create` | `services.create` | Pôvodný vývojový formulár CREATE |
+| POST | `/services` | `services.store` | Uloženie novej služby; `local.only` |
+| GET | `/services/{service}` | `services.show` | Verejný detail služby |
+| GET | `/admin/services` | `admin.services.index` | Administračný zoznam; `local.only` |
+| GET | `/admin/services/{service}/edit` | `admin.services.edit` | Formulár EDIT; `local.only` |
+| PATCH | `/admin/services/{service}` | `admin.services.update` | UPDATE; `local.only` |
+| DELETE | `/admin/services/{service}` | `admin.services.destroy` | DELETE; `local.only` |
+| PATCH | `/admin/services/{service}/status` | `admin.services.changeStatus` | Aktivácia/deaktivácia; `local.only` |
+
+**Pozor:** názvy a metódy sú zachytené podľa krokov potvrdených v rozhovore; skutočný aktuálny súbor `routes/web.php` nebol po dokončení celý skopírovaný. Pri nejasnostiach overiť `php artisan route:list`.
+
+### 3.4 Blade, komponenty a layout
+
+- [x] `@extends`, `@section`, `@yield` – základy layoutu
+- [x] `@forelse`, `@empty`, `@foreach`, `@if`, `@error`
+- [x] Bezpečné vypisovanie pomocou `{{ }}`; pri nedôveryhodných údajoch sa vyhnúť `{!! !!}`
+- [x] `??`, ternárny operátor `? :`, `old()`
+- [x] Formátovanie ceny: `number_format($service->price, 2, ',', ' ')`
+- [x] Blade komponent `resources/views/components/service-card.blade.php`
+- [x] V HOME sa používa `<x-service-card :sluzba="$sluzba" />`
+- [x] Celá karta je klikateľným `<a href="{{ route('services.show', $sluzba) }}">`
+- [x] Základná detailová stránka služby: `resources/views/services/show.blade.php`
+- [x] Flash správy a validačné chyby v Blade
+
+### 3.5 Tailwind, HOME a karty
+
+- [x] HOME používa `Service::where('is_active', true)->orderBy('price')->limit(5)->get()`
+- [x] Počet aktívnych zobrazovaných služieb zvýšený z 3 na **5**
+- [x] Základná responzivita kariet skúšaná pomocou Grid a Flexbox
+- [ ] **Finálne responzívne rozloženie nie je vizuálne uzavreté.** Pri troch kartách v prvom riadku zostávali dve nevyužívajúce celú šírku; skúšalo sa riešenie pomocou `flex flex-wrap`, ale finálne PASS nebolo potvrdené a používateľ dizajn nateraz odložil.
+
+**Zamýšľané rozloženie:** desktop 5 kariet v riadku; tablet 3 + 2 s roztiahnutím spodných dvoch; mobil 2 na riadok, na úzkom mobile 1. Pred ďalšou zmenou skontrolovať aktuálnu triedu rodičovského elementu v `home.blade.php`.
+
+### 3.6 Model `Service` a databáza
+
+- [x] Model `app/Models/Service.php` a migrácia pôvodnej tabuľky
+- [x] `fillable`: `name`, `description`, `price`, `is_active`
+- [x] Polia tabuľky: `id`, `name`, `description`, `price`, `is_active`, `created_at`, `updated_at`
+- [x] `description` je voliteľný text
+- [x] `is_active` má v lokálnej SQLite databáze predvolenú hodnotu `1` (overené cez `PRAGMA table_info(services)`)
+- [x] Teda pri `Service::create($validated)` netreba znovu nastavovať `is_active = true`
+- [ ] Polia `image`, `icon`, `content` **zatiaľ nie sú pridané**
+
+### 3.7 Eloquent a PHP
+
+- [x] `Service::all()`, `where()`, `get()`, `first()`, `find()`, `findOrFail()`
+- [x] `orderBy()`, `orderByDesc()`, `limit()`, `count()`, `pluck()`
+- [x] `new Service()`, `create()`, `save()`, `update()`, `delete()`, `refresh()`
+- [x] `$fillable` a hromadné priraďovanie
+- [x] Rozdiel medzi poľom `$sluzba['price']` a objektom `$sluzba->price`
+- [x] Indexované a asociatívne polia; `=>`
+- [x] Vnorené polia pri Pest datasetoch a rozdiel medzi počtom prípadov a argumentmi funkcie
+- [x] Logické hodnoty, `if/else`, ternárny operátor, logická negácia `!`
+
+### 3.8 CREATE – vytvorenie služby
+
+- [x] Formulár `resources/views/services/create.blade.php`
+- [x] POST route `/services` s `local.only`
+- [x] Validácia `name: required|string|max:255`; `description: nullable|string`; `price: required|numeric|min:0`
+- [x] `Service::create($validated)`
+- [x] `@csrf`, `old()`, `@error` pri poliach
+- [x] Presmerovanie na HOME a Flash správa
+- [x] Ručný test vytvorenia služby
 
 ```php
 public function store(Request $request)
@@ -377,220 +173,330 @@ public function store(Request $request)
 
     Service::create($validated);
 
-    return redirect()
-        ->route('home')
+    return redirect()->route('home')
         ->with('success', 'Služba bola úspešne vytvorená!');
 }
 ```
 
-- [x] Import modelu Service
-- [x] Validácia
-- [x] Service::create($validated)
-- [x] Presmerovanie na home
-- [x] Flash správa
+### 3.9 READ – HOME, verejný detail, admin zoznam
 
-### 3.15 Flash správy
+- [x] `HomeController@index`: päť najlacnejších aktívnych služieb
+- [x] Verejná route `services.show`: `/services/{service}`
+- [x] `ServiceController::show(Service $service)` vracia `view('services.show', compact('service'))`
+- [x] Šablóna `resources/views/services/show.blade.php` zobrazuje názov, popis a cenu
+- [x] Kliknutie na celú kartu na HOME otvorí jej vlastný detail – ručný test PASS
+- [x] `ServiceController::adminIndex()` používa `Service::all()` (zobrazuje aktívne i neaktívne)
+- [x] Admin zoznam v `resources/views/admin/services/index.blade.php` s cenou, stavom a akciami
+- [x] Verejný zoznam `/services` bol zvážený, ale **zámerne sa zatiaľ nepridáva**: na HOME už zoznam existuje
 
-- [x] Použitie ->with('success', ...)
-- [x] Zobrazenie session('success') v home.blade.php
-- [x] Zelená úspešná správa
-- [x] Overené zmiznutie správy po F5
+### 3.10 UPDATE – úprava služby
 
-Blade:
+- [x] Admin URL `/admin/services/{service}/edit`
+- [x] `edit(Service $service)` vracia `view('admin.services.edit', compact('service'))`
+- [x] Formulár `resources/views/admin/services/edit.blade.php`
+- [x] Predvyplnené hodnoty `old('name', $service->name)`, analógia pre description/price
+- [x] `@csrf` + `@method('PATCH')` a pomenovaná route `admin.services.update`
+- [x] `update(Request $request, Service $service)` validuje name/description/price a používa `$service->update($validated)`
+- [x] Po uložení redirect na `admin.services.index` a Flash správa
+- [x] Flash správa sa v admin zozname zobrazí a po F5 zmizne (PASS)
+- [x] `@error` pri name, description, price; validácia prázdneho názvu PASS
+- [x] Automatický test UPDATE potvrdzuje zmenu existujúceho záznamu bez zvýšenia počtu riadkov
 
-```blade
-@if (session('success'))
-    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">
-        {{ session('success') }}
-    </div>
-@endif
+### 3.11 DELETE – odstránenie služby
+
+- [x] DELETE route `admin.services.destroy`
+- [x] `destroy(Service $service)` používa `$service->delete()` a Flash správu
+- [x] V administrácii formulár `method="POST"`, `@csrf`, `@method('DELETE')`
+- [x] `onsubmit="return confirm(...)"`: zrušenie zachová záznam, potvrdenie odstráni (ručne PASS)
+- [x] Overenie zmiznutia zo zoznamu aj 404 po odstránení detailu
+- [x] Pest test `assertDatabaseMissing` a `assertDatabaseCount('services', 0)` – PASS
+- [ ] Zvážiť „soft deletes“ alebo deaktiváciu namiesto trvalého odstránenia v reálnej prevádzke
+
+### 3.12 Aktivácia/deaktivácia `is_active` – vlastná implementácia
+
+Používateľ samostatne navrhol controller, formulár aj route na prepínanie stavu služby. Funkcionalita funguje – **PASS**.
+
+- [x] Metóda `ServiceController::changeStatus(Service $service)`
+- [x] Pôvodné riešenie s `if/else` a `$service->save()` je správne
+- [x] Kratšia alternatíva: `$service->is_active = !$service->is_active;`
+- [x] PATCH route `/admin/services/{service}/status`, názov `admin.services.changeStatus`, s `local.only`
+- [x] HTML formulár v admin zozname s `@csrf` a `@method('PATCH')`
+- [x] Dynamický nápis tlačidla **Deaktivovať** (aktívna) / **Aktivovať** (neaktívna), odlišné farby – PASS
+- [x] Po prepnutí redirect na admin zoznam a Flash správa
+- [x] Neaktívna služba zmizne z HOME vďaka `where('is_active', true)`; na admin zozname zostane
+- [x] Automatický Pest test dvojitého prepnutia `1 -> 0 -> 1` – PASS
+
+Príklad stručnej implementácie:
+
+```php
+public function changeStatus(Service $service)
+{
+    $service->is_active = !$service->is_active;
+    $service->save();
+
+    return redirect()->route('admin.services.index')
+        ->with('success', 'Stav služby bol úspešne zmenený.');
+}
 ```
 
-Používateľ potvrdil, že celý proces funguje správne.
+*Poznámka:* presné znenie Flash správy môže byť v lokálnom controlleri odlišné; používateľova pôvodná verzia mala text `Sluzba uspesne zmenila stav`.
 
-### 3.16 Automatizované testy
+### 3.13 Testovanie – Pest (Lekcia 9 + časť Lekcie 10)
 
-- [ ] Vytvoriť tests/Feature/ServiceTest.php
-- [ ] Nastaviť izolovanú testovaciu databázu
-- [ ] Oboznámiť sa s RefreshDatabase
-- [ ] Naučiť sa assertStatus()
-- [ ] Naučiť sa assertSessionHasErrors()
-- [ ] Naučiť sa assertDatabaseHas()
-- [ ] Testovať úspešné uloženie
-- [ ] Testovať neplatné údaje
-- [ ] Testovať prístupové obmedzenia
-
-## 4. Aktuálny stav učenia – 19. 10. 2026
-
-**Posledná dokončená úloha:**
-Ukladanie služby cez formulár a zobrazenie Flash správy po presmerovaní.
-
-Používateľ potvrdil, že všetko funguje, vrátane zmiznutia Flash správy po F5.
-
-**Aktuálna téma:**
-Lekcia 9 – Automatizované testovanie Laravel aplikácie.
-
-**Najbližšia úloha:**
-Vytvoriť tests/Feature/ServiceTest.php.
+- [x] Vytvorený `tests/Feature/ServiceTest.php`
+- [x] Pest syntax `test('...', function () { ... });`
+- [x] Testovacia SQLite databáza `:memory:` potvrdená v `phpunit.xml` a v teste cez `config(...)`
+- [x] `uses(RefreshDatabase::class)` zabezpečuje izoláciu testovacích dát
+- [x] `withoutMiddleware(\App\Http\Middleware\LocalOnly::class)` pre testy admin operácií v `APP_ENV=testing`
+- [x] `assertStatus`, `assertSee`, `assertSessionHasErrors`, `assertDatabaseHas`, `assertDatabaseMissing`, `assertDatabaseCount`, `assertRedirect`, `assertSessionHas`
+- [x] Test GET formulára, konfigurácie SQLite, požadovaných údajov a vytvorenia služby
+- [x] Validácia záporných, textových, prázdnych cien; príliš dlhého (300 znakov) a hraničného (255 znakov) názvu
+- [x] Pest datasety cez `->with()`; pomenované prípady `['zaporna cena' => [-10], ...]`
+- [x] Tri duplicitné validačné testy nahradené datasetom
+- [x] Test UPDATE (existujúci záznam sa aktualizuje)
+- [x] Test DELETE (záznam zmizne)
+- [x] Test prepnutia aktivity tam aj späť
+- [x] **Posledný potvrdený výsledok: 12 úspešných testovacích prípadov (PASS)**
 
 Príkaz:
 
 ```bash
-php artisan make:test ServiceTest
+php artisan test --filter=ServiceTest
 ```
 
-Tento krok bol už vysvetlený, ale jeho vykonanie zatiaľ nie je potvrdené.
+Zámer učenia: základy Pest už stačia; **netreba znova prechádzať rozsiahlym testovaním**. Ďalšie testy pridávať účelne k novým dôležitým funkciám.
 
-Pred spúšťaním databázových testov je potrebné overiť izolovanú testovaciu databázu, aby neboli ohrozené existujúce údaje.
+### 3.14 Middleware a dočasná bezpečnosť
+
+- [x] `app/Http/Middleware/LocalOnly.php`: `if (!app()->environment('local')) abort(403);`
+- [x] Alias `local.only` registrovaný v `bootstrap/app.php`
+- [x] Middleware použitý pri zapisujúcich/administračných routes
+- [ ] **Skutočné prihlasovanie a autorizácia administrátora nie sú hotové**
+
+**Dôležité:** `local.only` nie je prihlasovanie, kontrola roly, ani kontrola IP adresy. Ak bude `APP_ENV=local` na verejne dostupnom serveri, samo osebe to administráciu nechráni. Pred publikovaním je nevyhnutné použiť `auth` a oprávnenia a bezpečne nastaviť produkčné prostredie. Verejný `show()` zatiaľ cez Route Model Binding môže zobraziť aj neaktívny záznam, ak niekto pozná ID; pred publikovaním treba určiť, či detail neaktívnej služby má byť nedostupný.
+
+## 4. Aktuálny stav učenia – 19. 10. 2026
+
+**Dokončené:** Základy Laravel + Eloquent + Blade; CREATE/READ/UPDATE/DELETE; detail služby; správa služieb na `/admin/services`; prepínanie `is_active`; Flash správy; validácie; 12 úspešných testovacích prípadov.
+
+**Posledná potvrdená úloha:** Pest test prepnutia stavu služby v oboch smeroch – používateľ odpovedal `PASS`.
+
+**Aktuálna téma:** **Lekcia 11 – obrázky, ikonky a obsah detailov služieb.**
+
+**Nasledujúci krok, zatiaľ NEPOTVRDENÝ:** spustiť príkaz:
+
+```bash
+php artisan make:migration add_media_and_content_to_services_table --table=services
+```
+
+Tento príkaz iba vytvorí migračný súbor; **nenapĺňa databázu a nemá sa automaticky spúšťať `migrate` bez kontroly obsahu**. Používateľ zatiaľ nepotvrdil, že migráciu vytvoril.
+
+**Ďalší postup:** po potvrdení `hotovo` vysvetliť `up()` a `down()`, bezpečne pridať nullable stĺpce `image`, `icon`, `content`, upraviť model `$fillable`, neskôr admin formuláre a Blade. Nerozbiehať znova CRUD ani Pest od začiatku.
 
 ## 5. Ďalší plán učenia
 
 ### Fáza 1 – Základy Eloquent a Blade
 
-- [x] Bezpečné vypisovanie
-- [x] Formátovanie cien
-- [x] Opis a NULL
-- [x] Podmienky Blade
-- [x] Blade komponenty
-- [x] Validácia
-- [x] Prázdny zoznam
+- [x] Modely, migrácie a databázové query
+- [x] Bezpečný výstup, cykly, podmienky, komponenty
+- [x] Formátovanie cien, náhradné texty, validácia
+- [x] Práca s formulármi a stavom session
 
 ### Fáza 2 – CRUD pre služby
 
-- [ ] Zoznam služieb
-- [ ] Detail služby
-- [x] Vytvorenie formulára
-- [x] Ukladanie cez store()
-- [x] Validácia
-- [ ] Edit a update
-- [ ] Delete a destroy
-- [x] CSRF
-- [x] Flash správy
-- [ ] Potvrdzovanie mazania
-- [ ] Automatizované CRUD testy
+- [x] CREATE – formulár a uloženie
+- [x] READ – HOME + detail služby + administračný zoznam
+- [x] UPDATE – formulár a uloženie zmien
+- [x] DELETE – potvrdenie a odstránenie
+- [x] Flash správy + validačné chyby
+- [x] Prepínanie `is_active` v admin zozname
+- [x] Automatizované testy CRUD a prepínania stavu (12 PASS)
 
-### Fáza 3 – Autentifikácia
+### Fáza 2B – Rozšírenie kariet a detailov (AKTUÁLNE)
 
-- [ ] Overenie kompatibilného starter kitu s Laravelom 13
-- [ ] Inštalácia autentifikácie
-- [ ] Registrácia a prihlasovanie
-- [ ] Odhlásenie
-- [ ] Reset hesla
-- [ ] Middleware auth
-- [ ] Autorizácia
-- [ ] Chránené administračné stránky
+- [ ] Vytvoriť novú migráciu pre tabuľku `services` – príkaz vysvetlený, zatiaľ nepotvrdený
+- [ ] Pridať `image` – cesta k obrázku služby
+- [ ] Pridať `icon` – názov/identifikátor ikony
+- [ ] Pridať `content` – podrobný obsah detailu
+- [ ] Zvoliť bezpečný spôsob ukladania a zobrazovania obrázkov (disk `public`, upload a validácia)
+- [ ] Zvoliť spôsob práce s ikonami (povolené názvy / knižnica; nie ľubovoľné HTML)
+- [ ] Rozšíriť model a administračné create/edit formuláre
+- [ ] Rozšíriť Blade kartu na obrázok + ikonku + nadpis + krátky popis + odkaz
+- [ ] Rozšíriť detail o plnohodnotný obsah
+- [ ] Dokončiť responzívne rozloženie piatich kariet
+- [ ] Premyslieť, či treba samostatný `url`/externý odkaz; zatiaľ sa detail generuje automaticky pomocou route
+- [ ] Pri rozšírení obsahu zohľadniť aktivitu služby aj na verejnom detaile
 
-### Fáza 4 – Filament administrácia
+### Fáza 3 – Autentifikácia a používatelia
 
-- [ ] Overenie kompatibility
-- [ ] Inštalácia
-- [ ] Administrátorský účet
-- [ ] Service Resource
-- [ ] Formuláre a tabuľky
-- [ ] Vyhľadávanie a filtre
-- [ ] Prístupové práva
+- [ ] Overiť kompatibilitu aktuálnych Laravel starter kitov s použitou verziou
+- [ ] Nainštalovať zvolený autentifikačný systém
+- [ ] Prihlásenie, odhlásenie, prípadne reset hesla
+- [ ] `auth` middleware a administrátorské oprávnenia
+- [ ] Presunúť/vyradiť dočasné `local.only` tam, kde ho nahradí reálna ochrana
+- [ ] Umiestniť vytváranie služby do admin časti (aktuálne vývojové `/services/create`)
+
+### Fáza 4 – Administrácia a prípadne Filament
+
+- [x] Jednoduchá vlastná admin tabuľka služieb pre lokálny vývoj
+- [x] Vlastné formuláre na úpravu a stav služby
+- [ ] Overiť, či je Filament pre projekt vhodný a kompatibilný
+- [ ] Prípadne nainštalovať Filament a vytvoriť `Service` resource
+- [ ] Vyhľadávanie, filtre, stránkovanie, roly a prístupové práva
 
 ### Fáza 5 – Obsah MMArena.sk
 
-- [ ] Finálna úvodná stránka
-- [ ] Služby a cenník
-- [ ] Detaily služieb
-- [ ] Kontakt
-- [ ] Otváracie hodiny
-- [ ] Informácie o štadióne
+- [x] Základ HOME s kartami služieb
+- [x] Základný detail služby
+- [x] Základná kontaktná route/controller
+- [ ] Dokončiť finálny obsah HOME, služby a cenník
+- [ ] Kontakt, otváracie hodiny a informácie o aréne
 - [ ] Aktuality
-- [ ] Mobilný dizajn
-- [ ] SEO
-- [ ] Prístupnosť
+- [ ] Finálny responzívny dizajn, SEO a prístupnosť
 - [ ] Optimalizácia obrázkov
 
-### Fáza 6 – Pokročilé funkcie
+### Fáza 6 – Databáza a pokročilé funkcie
 
-- [ ] Migrácie a rollback
+- [x] Základné migrácie, Eloquent a automatizované testy
+- [ ] Pokročilé migrácie a rollback
 - [ ] Seedery a factory
 - [ ] Vzťahy modelov
-- [ ] Stránkovanie
-- [ ] Vyhľadávanie
-- [ ] Nahrávanie obrázkov
-- [ ] Správa súborov
-- [ ] Automatizované testy
-- [ ] Logovanie chýb
-- [ ] Bezpečnosť
+- [ ] Stránkovanie, vyhľadávanie, filtre
+- [ ] Nahrávanie obrázkov a správa súborov
+- [ ] Logovanie a ošetrenie chýb
+- [ ] Doplniť testy nových bezpečnostne citlivých funkcií
 
 ### Fáza 7 – Nasadenie
 
-- [ ] Hosting
-- [ ] Produkčná databáza
-- [ ] Produkčné .env
-- [ ] HTTPS
-- [ ] Produkčné migrácie
-- [ ] Build assetov
-- [ ] Zálohy
-- [ ] Kontrola logov
-- [ ] Správa tajných údajov
+- [ ] Výber hostingu a produkčnej databázy
+- [ ] Produkčný `.env` (bez vystavených tajomstiev), `APP_DEBUG=false`
+- [ ] HTTPS a bezpečná správa oprávnení
+- [ ] Autentifikácia/autorizácia všetkých administračných akcií
+- [ ] Migrácie a zálohy databázy
+- [ ] Frontend build (`npm run build`)
+- [ ] Logy, monitoring, kontrola funkčnosti
+- [ ] Odstránenie testovacích dát a preverenie verejných URL
 
 ## 6. Pravidlá nášho učenia
 
-1. Postupujeme po malých krokoch.
-2. Kód vysvetľujeme pred použitím.
-3. Po každej úlohe čakáme na potvrdenie „hotovo“.
-4. Nemeníme veľa súborov naraz.
-5. Chyby najskôr pochopíme, potom opravujeme.
-6. Funkčné časti zbytočne neprepisujeme.
-7. Testovacie dáta označujeme.
-8. Overujeme kompatibilitu balíkov s Laravelom 13.
-9. Pravidelne používame Git.
-10. Cieľom je rozumieť riešeniu, nie kopírovať príkazy.
+1. Jeden malý krok naraz.
+2. Najskôr vysvetliť **prečo**, až potom kód.
+3. Po každom kroku čakať na `hotovo`, `PASS` alebo `FAIL`.
+4. Neopakovať vysvetlenie už pochopenej témy bez potreby.
+5. Nemení sa veľa súborov naraz.
+6. Fungujúci kód zbytočne neprepisovať; jednoduchšie užívateľské riešenia sú vítané.
+7. Pri chybe najprv vysvetliť príčinu.
+8. Keď používateľ chce úlohu skúsiť sám, dať priestor a následne skontrolovať kód.
+9. Keď používateľ žiada hotový kód alebo už má dosť testovania, neposielať ďalšie kvízy.
+10. Nové balíky a nástroje inštalovať až po overení kompatibility.
+11. Git commity a zálohy pred väčšími zmenami.
+12. Priorita je reálny web MMArena.sk, nie umelé precvičovanie zbytočných funkcií.
 
-## 7. Užitočné Eloquent príklady
+## 7. Užitočné príklady z projektu
+
+### Eloquent
 
 ```php
 Service::all();
-
 Service::where('is_active', true)->get();
-
-Service::where('is_active', true)
-    ->orderBy('price')
-    ->get();
-
-Service::where('is_active', true)
-    ->orderBy('price')
-    ->limit(3)
-    ->get();
-
-Service::where('is_active', true)->pluck('name');
-
 Service::where('is_active', true)->count();
-
+Service::where('is_active', true)->pluck('name');
 Service::find(1);
-
 Service::findOrFail(1);
+
+// HOME: najviac 5 najlacnejších aktívnych služieb
+Service::where('is_active', true)
+    ->orderBy('price')
+    ->limit(5)
+    ->get();
+
+// Admin: všetky služby
+Service::all();
 ```
 
-## 8. Bezpečnostné pravidlá
+### Zmena stavu
 
-- Neukladať heslá a tajné kľúče do repozitára.
-- .env musí zostať mimo verzovania.
-- Validovať vstupy.
-- Escapovať nedôveryhodné výstupy.
-- Chrániť administráciu autentifikáciou a autorizáciou.
-- Nepovažovať LocalOnly za produkčné zabezpečenie.
-- Testovať na izolovanej databáze.
-- Pred produkciou odstrániť testovacie údaje.
-- Pred rizikovými zmenami vytvoriť zálohu alebo commit.
+```php
+$service->is_active = !$service->is_active;
+$service->save();
+```
+
+### Blade odkaz na detail
+
+```blade
+<a href="{{ route('services.show', $sluzba) }}">
+    {{ $sluzba->name }}
+</a>
+```
+
+### PATCH a DELETE formuláre
+
+```blade
+<form method="POST" action="{{ route('admin.services.update', $service) }}">
+    @csrf
+    @method('PATCH')
+    <!-- polia a submit -->
+</form>
+
+<form method="POST" action="{{ route('admin.services.destroy', $service) }}">
+    @csrf
+    @method('DELETE')
+    <!-- potvrdenie a submit -->
+</form>
+```
+
+### Pest – test prepnutia stavu
+
+```php
+test('stav sluzby je mozne aktivovat a deaktivovat', function () {
+    $this->withoutMiddleware(\App\Http\Middleware\LocalOnly::class);
+
+    $service = \App\Models\Service::create([
+        'name' => 'Testovacia sluzba',
+        'description' => 'Test zmeny stavu',
+        'price' => 15,
+        'is_active' => true,
+    ]);
+
+    $this->patch(route('admin.services.changeStatus', $service))
+        ->assertRedirect(route('admin.services.index'));
+
+    $this->assertDatabaseHas('services', [
+        'id' => $service->id,
+        'is_active' => 0,
+    ]);
+
+    $this->patch(route('admin.services.changeStatus', $service))
+        ->assertRedirect(route('admin.services.index'));
+
+    $this->assertDatabaseHas('services', [
+        'id' => $service->id,
+        'is_active' => 1,
+    ]);
+});
+```
+
+## 8. Bezpečnosť a otvorené rozhodnutia
+
+- Nikdy neverejniť `.env`, heslá, tokeny ani produkčné tajomstvá.
+- `local.only` **nenahrádza autentifikáciu/autorizáciu**; nepublikovať súčasnú administráciu bez jej ochrany.
+- Používať `@csrf`, validáciu vstupov a escapované Blade výstupy.
+- S nahrávanými súbormi pracovať cez validáciu typu, veľkosti a bezpečné úložisko.
+- Pred nasadením rozhodnúť o zobrazení neaktívnych služieb na detaile (HOME ich už filtruje).
+- Pred zmazaním dôležitých dát urobiť zálohu; zvážiť soft delete.
+- Pri produkčných URL nenechať otvorený vývojový CREATE formulár.
+- Pred `php artisan migrate` skontrolovať obsah novej migrácie a urobiť zálohu.
 
 ---
 
-## 9. Bod pokračovania
+## 9. Presný bod pokračovania
 
-**AKTUÁLNE: LEKCIA 9 – AUTOMATIZOVANÉ TESTOVANIE**
+**Lekcia 11, krok 1:** Pripraviť novú migráciu na stĺpce `image`, `icon`, `content` v tabuľke `services`.
 
-Najbližšie:
+```bash
+php artisan make:migration add_media_and_content_to_services_table --table=services
+```
 
-1. Vytvoriť súbor tests/Feature/ServiceTest.php.
-2. Overiť oddelenú testovaciu databázu.
-3. Vysvetliť prvý Feature test.
-4. Otestovať GET formulár.
-5. Otestovať validáciu a uloženie služby.
+**Stav:** príkaz bol navrhnutý, ale jeho vykonanie zatiaľ nebolo potvrdené. Neoznačovať ho ako dokončený.
 
-Pokračovať po jednom kroku a čakať na potvrdenie „hotovo“.
+Po potvrdení vytvorenia migrácie pokračovať vysvetlením `up()` a `down()` a pridať nové stĺpce **po jednom logickom kroku**. Nevytvárať znova CRUD ani nevyžadovať opakovanie doteraz úspešných testov.
